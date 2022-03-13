@@ -7,11 +7,7 @@ const app = express();
 
 app.use(express.json());
 
-const customers = [{
-  cpf: "11124870695",
-  name: "Flávio Tassan",
-  statement: []
-}];
+const customers = [];
 
 // Middleware
 function verifyExistsAccountCPF(request, response, next) {
@@ -77,6 +73,15 @@ app.delete("/account", verifyExistsAccountCPF, (request, response) => {
   customers.splice(customer, 1);
 
   return response.status(200).json(customers);
+});
+
+
+app.get("/balance", verifyExistsAccountCPF, (request, response) => {
+  const { customer } = request;
+
+  const balance = getBalance(customer.statement);
+
+  return response.json(balance);
 });
 
 app.get("/statement", verifyExistsAccountCPF, (request, response) => {
